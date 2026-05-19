@@ -1,71 +1,80 @@
-# User Provides Sql
+# Sql To Dashboard
 
 [中文版](./README_zh.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.1-blue)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-1.0-blue)](SKILL.md)
 
-> user provides a SQL query and needs to generate a data dashboard or chart from query results
+> Converts SQL query results into chart specifications — line, bar, scatter, pie, and dashboard panels
 
 ## What Problem This Solves
 
-Brief paragraph explaining the specific engineering problem this skill solves.
-When triggered: [trigger condition].
+SQL query returns rows and columns, but trends and anomalies are invisible without visualization. This skill analyzes the query structure (GROUP BY, aggregates, date columns) and data shape to recommend and generate the right chart type.
+
+**When triggered:** SQL query or result set + chart/dashboard/visualize intent.
 
 ## Features
 
-- Feature 1
-- Feature 2
-- Feature 3
+- **Query structure analysis** — infers result shape from SELECT columns, GROUP BY, ORDER BY, and aggregates
+- **Automatic chart selection** — time-series → line chart, Top-N with counts → horizontal bar, two numeric cols → scatter
+- **Multi-platform output** — Plotly JSON, Grafana panel JSON, or Mermaid for simple data
+- **Handles empty results** — explicitly reports "No data returned" instead of rendering empty charts
 
 ## Quick Start
 
-### Installation
-
 ```bash
 # Via ClawHub
-clawhub install User Provides Sql
+clawhub install sql-to-dashboard
 
 # Or manually
-cp -r User Provides Sql ~/.openclaw/skills/
+cp -r sql-to-dashboard ~/.openclaw/skills/
 ```
 
 ### Usage
 
-```bash
-# Mode 1
-clawhub run User Provides Sql --mode read
-
-# Mode 2
-clawhub run User Provides Sql --mode write --input ./data.json
 ```
+/sql-to-dashboard
+```
+
+Paste SQL query or result CSV, ask to visualize it.
+
+```
+/sql-to-dashboard/multi
+```
+
+Combines multiple related queries into one dashboard with multiple panels.
+
+## Modes
+
+| Mode | Description |
+|------|-------------|
+| `/sql-to-dashboard` | Single query → chart specification |
+| `/sql-to-dashboard/multi` | Multiple queries → dashboard with multiple panels |
+
+## Examples
+
+| Query Pattern | Chart Type |
+|--------------|------------|
+| `SELECT date, COUNT(*)` grouped by month | Line chart (time series = trend) |
+| `SELECT status, COUNT(*)` with 3 statuses | Donut chart with legend |
+| `SELECT category, SUM(revenue)` | Pie chart for proportion |
+| Empty result set | "Query returned 0 rows — no chart to display" |
+| 10k row result | Aggregates to top 100, states "showing top 100 of 10,000" |
 
 ## Directory Structure
 
 ```
-User Provides Sql/
-├── SKILL.md          # Entry point
-├── LICENSE           # MIT
-├── README.md         # This file
-├── README_zh.md      # Chinese version
-├── CONTRIBUTING.md    # Contribution guide
+sql-to-dashboard/
+├── SKILL.md
+├── LICENSE
+├── README.md
+├── README_zh.md
+├── CONTRIBUTING.md
 ├── .gitignore
-├── references/       # Templates and schemas
-│   └── ...
-└── scripts/          # Helper scripts (if any)
-    └── ...
+├── references/       # Chart type decision tree, Plotly/Grafana specs
+└── tests/
 ```
-
-## Configuration
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `API_KEY` | Yes | API key for the service |
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
-
----
-
-Powered by [MiniMax](https://minimax.io).
+MIT License — see [LICENSE](LICENSE).
